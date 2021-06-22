@@ -11,6 +11,13 @@
 
 [国内4种常用日内CTA策略介绍及实现](https://zhuanlan.zhihu.com/p/24849748)
 
+[如何构建连续的期货价格序列](https://zhuanlan.zhihu.com/p/51880559)
+
+[如何构建稳健的商品期货carry组合？](https://zhuanlan.zhihu.com/p/46197447)
+
+[期货相关文章总结](https://zhuanlan.zhihu.com/p/53511256)
+
+[如何分配资金？组合优化的是是非非](https://zhuanlan.zhihu.com/p/64188442)
 
 ---- 
 # 股票
