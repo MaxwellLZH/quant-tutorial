@@ -15,12 +15,35 @@ TR(True Range) = Max(
 
 <img src="https://render.githubusercontent.com/render/math?math=ATR%3Dsum%20_%7Bi%3D1%7D%5E%7BN%7D%20True%20Range%2FN">
 
+策略：
+- 通道上轨 = N日均价 + ATR * k
+- 通道下轨 = N日均价 - ATR * k
+- 突破上轨做多，突破下轨做空
 
 **2.Boll线策略**  
+- 中枢 = N日移动平均线
+- 上轨 = 中枢 + k * stddev(N)
+- 下轨 = 中枢 - k * stddev(N)
+- 突破上轨做多，突破下轨做空
 
-**3.MACD线策略**  
+**3.MA线策略**  
+- 短期均线向上突破长期均线，做多
+- 短期均线向下突破长期均线，做空
 
-**4.MA线策略**  
+**4.MACD线策略**  
+个人理解是对MA策略做了两个改进：
+1. MA换成指数平滑EMA
+2. 计算了二阶的趋势相MACD
+
+策略：
+- EMA(12) = 前一日EMA(12) * 11/13 + 今日收盘价 * 2/13
+- EMA(26) = 前一日EMA(26) * 25/27 + 今日收盘价 * 2/27
+- 差离值DIF = EMA(12) - EMA(26)
+- DEA = DIF的9日EMA = 前一日DEA * 8/10 + 今日DIF * 2/10
+- MACD = 2 * (DIF - DEA)
+
+- DIF > 0 & MACD > 0，做多或平仓空头
+- DIF < 0 & MACD < 0，做空或平仓多头
 
 
 #### 二、日内策略
