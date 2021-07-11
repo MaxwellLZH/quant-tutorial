@@ -91,7 +91,7 @@ def OnBar(context, code, bartype):
     # 取得当前价格
     dyndata = GetQuote(g.code)
     current_price = dyndata.now
-    log.info((PRICE_PREFIX, GetCurrentTime(), current_price))
+    log.info((PRICE_PREFIX, g.code, GetCurrentTime(), current_price))
 
     option = PBObj()
     if g.last_code:
