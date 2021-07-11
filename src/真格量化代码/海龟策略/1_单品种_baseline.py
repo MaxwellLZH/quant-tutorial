@@ -3,6 +3,11 @@ import datetime
 import numpy as np
 
 
+# 用来记录价格信息的logging前缀，方便回测时下载log解析
+PRICE_PREFIX = '*PRICE*' 
+
+
+
 # 重置参数
 def reset():
     # 每次交易unit数目
@@ -86,6 +91,7 @@ def OnBar(context, code, bartype):
     # 取得当前价格
     dyndata = GetQuote(g.code)
     current_price = dyndata.now
+    log.info((PRICE_PREFIX, GetCurrentTime(), current_price))
 
     option = PBObj()
     if g.last_code:

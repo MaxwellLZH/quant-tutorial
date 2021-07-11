@@ -1,3 +1,9 @@
+"""
+在baseline上进行以下改动：
+1. 添加合约到期前n天主动平仓
+2. 支持多品种交易
+"""
+
 from PoboAPI import *
 import datetime
 import numpy as np
