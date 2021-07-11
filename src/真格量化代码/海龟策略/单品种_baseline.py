@@ -65,7 +65,7 @@ def OnStart(context):
     g.future_index = "cu"
     # 登录交易账号，需在主页用户管理中设置账号，并把期货测试替换成您的账户名称
     context.myacc = None
-    if context.accounts.has_key("回测期货"):
+    if "回测期货" in context.accounts:
         print("登录交易账号[回测期货]")
         if context.accounts["回测期货"].Login():
             context.myacc = context.accounts["回测期货"]

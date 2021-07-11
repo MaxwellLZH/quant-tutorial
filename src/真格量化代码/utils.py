@@ -99,9 +99,9 @@ def add_trading_days(n, curr=None, exchange="SHFE"):
     return tds[n]
 
 
-def get_actively_trading_merchant_codes(exchange="SHFE", lookback=90, threshold=1e8):
+def get_actively_trading_merchant_codes(exchange="SHFE", lookback=90, threshold=1e9):
     """
-    获取指定交易所下活跃度超过一定阈值的期货代码列表
+    获取指定交易所下历史日成交金额的中位数超过一定阈值的期货代码列表
 
     Parameters
     ----------
@@ -111,12 +111,28 @@ def get_actively_trading_merchant_codes(exchange="SHFE", lookback=90, threshold=
     lookback: int, 默认90天
         观察期时长
 
-    threshold: float, 默认为1e8
-        活跃度阈值
+    threshold: float, 默认为1e9
+        成交金额的阈值
 
     Returns
     -------
     codes : List[str]
-        含期货代码的列表
+        含期货代码的列表，默认按成交金额排序
     """
     merchant_codes = GetVarieties(exchange)
+
+    codes = []
+    for c in merchant_codes:
+        main_contract = GetMainContract(exchange, c, 20)
+        df_hist = GetHisDataAsDF(code=main_contract,
+                                bar_type=BarType.Day,
+                                start_date=None,
+                                end_date=GetCurrentTime(),
+                                count=lookback)
+        # 如果历史数据太少，不考虑
+        if len(df_hist) < 30:
+            continue
+        avg_turnover = df_hist['turnover'].median()
+        if avg_turnover > threshold:
+            codes.append((avg_turnover, c))
+    return [c[1] for c in sorted(codes)]
