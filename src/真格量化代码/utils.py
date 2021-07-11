@@ -60,9 +60,10 @@ def add_days(n, curr=None):
     dt : datetime
         调整后的日期
     """
-    from dateutils.relativedelta import relativedelta
+    # from dateutils.relativedelta import relativedelta
+    from datetime import timedelta
     curr = curr or GetCurrentTime().date()
-    return curr + relativedelta(days=n)
+    return curr + timedelta(days=n)
 
 
 def add_trading_days(n, curr=None, exchange="SHFE"):
@@ -85,12 +86,12 @@ def add_trading_days(n, curr=None, exchange="SHFE"):
     dt : datetime
         调整后的日期
     """
-    from dateutils.relativedelta import relativedelta
+    from datetime import timedelta
     import math
 
     n = int(n)
     curr = curr or GetCurrentTime().date()
-    dt = curr + relativedelta(math.floor(days * 1.7))
+    dt = curr + timedelta(math.floor(n * 1.7))
     if n < 0:
         tds = GetTradingDates(exchange, dt, curr)
     else:
@@ -99,7 +100,23 @@ def add_trading_days(n, curr=None, exchange="SHFE"):
 
 
 def get_actively_trading_merchant_codes(exchange="SHFE", lookback=90, threshold=1e8):
-    """获取指定交易所下活跃的期货品种"""
-    from 
+    """
+    获取指定交易所下活跃度超过一定阈值的期货代码列表
 
+    Parameters
+    ----------
+    exchange: str, 默认为SHFE
+        交易所代码
+
+    lookback: int, 默认90天
+        观察期时长
+
+    threshold: float, 默认为1e8
+        活跃度阈值
+
+    Returns
+    -------
+    codes : List[str]
+        含期货代码的列表
+    """
     merchant_codes = GetVarieties(exchange)
