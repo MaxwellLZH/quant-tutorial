@@ -1,0 +1,468 @@
+2021-10-08 09:00:00 - INFO  - 函数运行时间(market_open):09:00:00
+
+2021-10-08 09:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827053 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-08 09:00:00 error=)
+
+2021-10-08 09:00:00 - INFO  - order FuturesOrder(entrust_id=1653827053 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-08 09:00:00 error=) trade price: 3371.0, amount:1, commission: 1.5
+
+2021-10-08 09:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827053 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-08 09:00:00 error=)
+
+2021-10-08 09:00:00 - ERROR - 【多头开仓】code='M2201.XDCE', amount=1, price=3371.0
+
+2021-10-08 09:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827054 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-08 09:00:00 error=)
+
+2021-10-08 09:00:00 - INFO  - order FuturesOrder(entrust_id=1653827054 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-08 09:00:00 error=) trade price: 3368.0, amount:1, commission: 1.5
+
+2021-10-08 09:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827054 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-08 09:00:00 error=)
+
+2021-10-08 09:00:00 - ERROR - 【空头开仓】code='M2201.XDCE', amount=1, price=3368.0
+
+2021-10-08 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-08 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827053, 'order_id': 1653827053, 'time': datetime.datetime(2021, 10, 8, 9, 0), 'amount': 1, 'price': 3371.0})
+
+2021-10-08 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827054, 'order_id': 1653827054, 'time': datetime.datetime(2021, 10, 8, 9, 0), 'amount': 1, 'price': 3368.0})
+
+2021-10-08 15:30:00 - INFO  - 一天结束
+
+2021-10-08 15:30:00 - INFO  - ##############################################################
+
+2021-10-08 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-08 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827055 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-08 21:00:00 error=)
+
+2021-10-08 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827055 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-08 21:00:00 error=) trade price: 3351.0, amount:1, commission: 1.5
+
+2021-10-08 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827055 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-08 21:00:00 error=)
+
+2021-10-08 21:00:00 - ERROR - 【多头开仓】code='M2201.XDCE', amount=1, price=3351.0
+
+2021-10-08 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827056 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-08 21:00:00 error=)
+
+2021-10-08 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827056 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-08 21:00:00 error=) trade price: 3348.0, amount:1, commission: 1.5
+
+2021-10-08 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827056 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-08 21:00:00 error=)
+
+2021-10-08 21:00:00 - ERROR - 【空头开仓】code='M2201.XDCE', amount=1, price=3348.0
+
+2021-10-11 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-11 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827055, 'order_id': 1653827055, 'time': datetime.datetime(2021, 10, 8, 21, 0), 'amount': 1, 'price': 3351.0})
+
+2021-10-11 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827056, 'order_id': 1653827056, 'time': datetime.datetime(2021, 10, 8, 21, 0), 'amount': 1, 'price': 3348.0})
+
+2021-10-11 15:30:00 - INFO  - 一天结束
+
+2021-10-11 15:30:00 - INFO  - ##############################################################
+
+2021-10-11 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-11 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827057 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-11 21:00:00 error=)
+
+2021-10-11 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827057 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-11 21:00:00 error=) trade price: 3326.0, amount:1, commission: 1.5
+
+2021-10-11 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827057 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-11 21:00:00 error=)
+
+2021-10-11 21:00:00 - ERROR - 【多头开仓】code='M2201.XDCE', amount=1, price=3326.0
+
+2021-10-11 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827058 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-11 21:00:00 error=)
+
+2021-10-11 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827058 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-11 21:00:00 error=) trade price: 3323.0, amount:1, commission: 1.5
+
+2021-10-11 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827058 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-11 21:00:00 error=)
+
+2021-10-11 21:00:00 - ERROR - 【空头开仓】code='M2201.XDCE', amount=1, price=3323.0
+
+2021-10-12 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-12 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827057, 'order_id': 1653827057, 'time': datetime.datetime(2021, 10, 11, 21, 0), 'amount': 1, 'price': 3326.0})
+
+2021-10-12 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827058, 'order_id': 1653827058, 'time': datetime.datetime(2021, 10, 11, 21, 0), 'amount': 1, 'price': 3323.0})
+
+2021-10-12 15:30:00 - INFO  - 一天结束
+
+2021-10-12 15:30:00 - INFO  - ##############################################################
+
+2021-10-12 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-12 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827059 security=M2201.XDCE mode=OrderTargetAmount: _amount=4 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-12 21:00:00 error=)
+
+2021-10-12 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827059 security=M2201.XDCE mode=OrderTargetAmount: _amount=4 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-12 21:00:00 error=) trade price: 3295.0, amount:1, commission: 1.5
+
+2021-10-12 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827059 security=M2201.XDCE mode=OrderTargetAmount: _amount=4 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-12 21:00:00 error=)
+
+2021-10-12 21:00:00 - ERROR - 【多头开仓】code='M2201.XDCE', amount=1, price=3295.0
+
+2021-10-12 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827060 security=M2201.XDCE mode=OrderTargetAmount: _amount=4 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-12 21:00:00 error=)
+
+2021-10-12 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827060 security=M2201.XDCE mode=OrderTargetAmount: _amount=4 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-12 21:00:00 error=) trade price: 3292.0, amount:1, commission: 1.5
+
+2021-10-12 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827060 security=M2201.XDCE mode=OrderTargetAmount: _amount=4 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-12 21:00:00 error=)
+
+2021-10-12 21:00:00 - ERROR - 【空头开仓】code='M2201.XDCE', amount=1, price=3292.0
+
+2021-10-13 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-13 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827059, 'order_id': 1653827059, 'time': datetime.datetime(2021, 10, 12, 21, 0), 'amount': 1, 'price': 3295.0})
+
+2021-10-13 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827060, 'order_id': 1653827060, 'time': datetime.datetime(2021, 10, 12, 21, 0), 'amount': 1, 'price': 3292.0})
+
+2021-10-13 15:30:00 - INFO  - 一天结束
+
+2021-10-13 15:30:00 - INFO  - ##############################################################
+
+2021-10-13 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-13 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827061 security=M2201.XDCE mode=OrderTargetAmount: _amount=5 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-13 21:00:00 error=)
+
+2021-10-13 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827061 security=M2201.XDCE mode=OrderTargetAmount: _amount=5 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-13 21:00:00 error=) trade price: 3237.0, amount:1, commission: 1.5
+
+2021-10-13 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827061 security=M2201.XDCE mode=OrderTargetAmount: _amount=5 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-13 21:00:00 error=)
+
+2021-10-13 21:00:00 - ERROR - 【多头开仓】code='M2201.XDCE', amount=1, price=3237.0
+
+2021-10-13 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827062 security=M2201.XDCE mode=OrderTargetAmount: _amount=0 style=MarketOrderStyle: _limit_price=0.0 side=short action=close margin=False entrust_time=2021-10-13 21:00:00 error=)
+
+2021-10-13 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827062 security=M2201.XDCE mode=OrderTargetAmount: _amount=0 style=MarketOrderStyle: _limit_price=0.0 side=short action=close margin=False entrust_time=2021-10-13 21:00:00 error=) trade price: 3237.0, amount:4, commission: 6.0
+
+2021-10-13 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827062 security=M2201.XDCE mode=OrderTargetAmount: _amount=0 style=MarketOrderStyle: _limit_price=0.0 side=short action=close margin=False entrust_time=2021-10-13 21:00:00 error=)
+
+2021-10-13 21:00:00 - WARNING - /opt/conda/lib/python3.6/site-packages/sqlalchemy/dialects/mysql/base.py:1942: SAWarning: MariaDB (10, 2, 6) before 10.2.9 has known issues regarding CHECK constraints, which impact handling of NULL values with SQLAlchemy's boolean datatype (MDEV-13596). An additional issue prevents proper migrations of columns with CHECK constraints (MDEV-11114).  Please upgrade to MariaDB 10.2.9 or greater, or use the MariaDB 10.1 series, to avoid these issues.
+  "series, to avoid these issues." % (mdb_version, ))
+
+2021-10-13 21:00:00 - ERROR - 【空头平仓】code='M2201.XDCE', amount=4, price=3237.0, avg_cost=3332.75, earnings=3830.0
+
+2021-10-14 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-14 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827061, 'order_id': 1653827061, 'time': datetime.datetime(2021, 10, 13, 21, 0), 'amount': 1, 'price': 3237.0})
+
+2021-10-14 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827062, 'order_id': 1653827062, 'time': datetime.datetime(2021, 10, 13, 21, 0), 'amount': 4, 'price': 3237.0})
+
+2021-10-14 15:30:00 - INFO  - 一天结束
+
+2021-10-14 15:30:00 - INFO  - ##############################################################
+
+2021-10-14 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-14 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827063 security=M2201.XDCE mode=OrderTargetAmount: _amount=6 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-14 21:00:00 error=)
+
+2021-10-14 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827063 security=M2201.XDCE mode=OrderTargetAmount: _amount=6 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-14 21:00:00 error=) trade price: 3267.0, amount:1, commission: 1.5
+
+2021-10-14 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827063 security=M2201.XDCE mode=OrderTargetAmount: _amount=6 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-14 21:00:00 error=)
+
+2021-10-14 21:00:00 - ERROR - 【多头开仓】code='M2201.XDCE', amount=1, price=3267.0
+
+2021-10-14 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827064 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-14 21:00:00 error=)
+
+2021-10-14 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827064 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-14 21:00:00 error=) trade price: 3264.0, amount:1, commission: 1.5
+
+2021-10-14 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827064 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-14 21:00:00 error=)
+
+2021-10-14 21:00:00 - ERROR - 【空头开仓】code='M2201.XDCE', amount=1, price=3264.0
+
+2021-10-15 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-15 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827063, 'order_id': 1653827063, 'time': datetime.datetime(2021, 10, 14, 21, 0), 'amount': 1, 'price': 3267.0})
+
+2021-10-15 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827064, 'order_id': 1653827064, 'time': datetime.datetime(2021, 10, 14, 21, 0), 'amount': 1, 'price': 3264.0})
+
+2021-10-15 15:30:00 - INFO  - 一天结束
+
+2021-10-15 15:30:00 - INFO  - ##############################################################
+
+2021-10-15 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-15 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827065 security=M2201.XDCE mode=OrderTargetAmount: _amount=0 style=MarketOrderStyle: _limit_price=0.0 side=long action=close margin=False entrust_time=2021-10-15 21:00:00 error=)
+
+2021-10-15 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827065 security=M2201.XDCE mode=OrderTargetAmount: _amount=0 style=MarketOrderStyle: _limit_price=0.0 side=long action=close margin=False entrust_time=2021-10-15 21:00:00 error=) trade price: 3275.0, amount:6, commission: 9.0
+
+2021-10-15 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827065 security=M2201.XDCE mode=OrderTargetAmount: _amount=0 style=MarketOrderStyle: _limit_price=0.0 side=long action=close margin=False entrust_time=2021-10-15 21:00:00 error=)
+
+2021-10-15 21:00:00 - ERROR - 【多头平仓】code='M2201.XDCE', amount=6, price=3275.0, avg_cost=3307.8333333333335, earnings=-1970.000000000009
+
+2021-10-15 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827066 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-15 21:00:00 error=)
+
+2021-10-15 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827066 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-15 21:00:00 error=) trade price: 3275.0, amount:1, commission: 1.5
+
+2021-10-15 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827066 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-15 21:00:00 error=)
+
+2021-10-15 21:00:00 - ERROR - 【空头开仓】code='M2201.XDCE', amount=1, price=3275.0
+
+2021-10-18 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-18 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827065, 'order_id': 1653827065, 'time': datetime.datetime(2021, 10, 15, 21, 0), 'amount': 6, 'price': 3275.0})
+
+2021-10-18 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827066, 'order_id': 1653827066, 'time': datetime.datetime(2021, 10, 15, 21, 0), 'amount': 1, 'price': 3275.0})
+
+2021-10-18 15:30:00 - INFO  - 一天结束
+
+2021-10-18 15:30:00 - INFO  - ##############################################################
+
+2021-10-18 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-18 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827067 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-18 21:00:00 error=)
+
+2021-10-18 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827067 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-18 21:00:00 error=) trade price: 3221.0, amount:1, commission: 1.5
+
+2021-10-18 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827067 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-18 21:00:00 error=)
+
+2021-10-18 21:00:00 - ERROR - 【多头开仓】code='M2201.XDCE', amount=1, price=3221.0
+
+2021-10-18 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827068 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-18 21:00:00 error=)
+
+2021-10-18 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827068 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-18 21:00:00 error=) trade price: 3218.0, amount:1, commission: 1.5
+
+2021-10-18 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827068 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-18 21:00:00 error=)
+
+2021-10-18 21:00:00 - ERROR - 【空头开仓】code='M2201.XDCE', amount=1, price=3218.0
+
+2021-10-19 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-19 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827067, 'order_id': 1653827067, 'time': datetime.datetime(2021, 10, 18, 21, 0), 'amount': 1, 'price': 3221.0})
+
+2021-10-19 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827068, 'order_id': 1653827068, 'time': datetime.datetime(2021, 10, 18, 21, 0), 'amount': 1, 'price': 3218.0})
+
+2021-10-19 15:30:00 - INFO  - 一天结束
+
+2021-10-19 15:30:00 - INFO  - ##############################################################
+
+2021-10-19 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-19 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827069 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-19 21:00:00 error=)
+
+2021-10-19 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827069 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-19 21:00:00 error=) trade price: 3232.0, amount:1, commission: 1.5
+
+2021-10-19 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827069 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-19 21:00:00 error=)
+
+2021-10-19 21:00:00 - ERROR - 【多头开仓】code='M2201.XDCE', amount=1, price=3232.0
+
+2021-10-19 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827070 security=M2201.XDCE mode=OrderTargetAmount: _amount=4 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-19 21:00:00 error=)
+
+2021-10-19 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827070 security=M2201.XDCE mode=OrderTargetAmount: _amount=4 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-19 21:00:00 error=) trade price: 3229.0, amount:1, commission: 1.5
+
+2021-10-19 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827070 security=M2201.XDCE mode=OrderTargetAmount: _amount=4 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-19 21:00:00 error=)
+
+2021-10-19 21:00:00 - ERROR - 【空头开仓】code='M2201.XDCE', amount=1, price=3229.0
+
+2021-10-20 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-20 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827069, 'order_id': 1653827069, 'time': datetime.datetime(2021, 10, 19, 21, 0), 'amount': 1, 'price': 3232.0})
+
+2021-10-20 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827070, 'order_id': 1653827070, 'time': datetime.datetime(2021, 10, 19, 21, 0), 'amount': 1, 'price': 3229.0})
+
+2021-10-20 15:30:00 - INFO  - 一天结束
+
+2021-10-20 15:30:00 - INFO  - ##############################################################
+
+2021-10-20 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-20 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827071 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-20 21:00:00 error=)
+
+2021-10-20 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827071 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-20 21:00:00 error=) trade price: 3243.0, amount:1, commission: 1.5
+
+2021-10-20 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827071 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-20 21:00:00 error=)
+
+2021-10-20 21:00:00 - ERROR - 【多头开仓】code='M2201.XDCE', amount=1, price=3243.0
+
+2021-10-20 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827072 security=M2201.XDCE mode=OrderTargetAmount: _amount=0 style=MarketOrderStyle: _limit_price=0.0 side=short action=close margin=False entrust_time=2021-10-20 21:00:00 error=)
+
+2021-10-20 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827072 security=M2201.XDCE mode=OrderTargetAmount: _amount=0 style=MarketOrderStyle: _limit_price=0.0 side=short action=close margin=False entrust_time=2021-10-20 21:00:00 error=) trade price: 3243.0, amount:4, commission: 6.0
+
+2021-10-20 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827072 security=M2201.XDCE mode=OrderTargetAmount: _amount=0 style=MarketOrderStyle: _limit_price=0.0 side=short action=close margin=False entrust_time=2021-10-20 21:00:00 error=)
+
+2021-10-20 21:00:00 - ERROR - 【空头平仓】code='M2201.XDCE', amount=4, price=3243.0, avg_cost=3246.5, earnings=140.0
+
+2021-10-21 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-21 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827071, 'order_id': 1653827071, 'time': datetime.datetime(2021, 10, 20, 21, 0), 'amount': 1, 'price': 3243.0})
+
+2021-10-21 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827072, 'order_id': 1653827072, 'time': datetime.datetime(2021, 10, 20, 21, 0), 'amount': 4, 'price': 3243.0})
+
+2021-10-21 15:30:00 - INFO  - 一天结束
+
+2021-10-21 15:30:00 - INFO  - ##############################################################
+
+2021-10-21 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-21 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827073 security=M2201.XDCE mode=OrderTargetAmount: _amount=4 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-21 21:00:00 error=)
+
+2021-10-21 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827073 security=M2201.XDCE mode=OrderTargetAmount: _amount=4 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-21 21:00:00 error=) trade price: 3249.0, amount:1, commission: 1.5
+
+2021-10-21 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827073 security=M2201.XDCE mode=OrderTargetAmount: _amount=4 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-21 21:00:00 error=)
+
+2021-10-21 21:00:00 - ERROR - 【多头开仓】code='M2201.XDCE', amount=1, price=3249.0
+
+2021-10-21 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827074 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-21 21:00:00 error=)
+
+2021-10-21 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827074 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-21 21:00:00 error=) trade price: 3246.0, amount:1, commission: 1.5
+
+2021-10-21 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827074 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-21 21:00:00 error=)
+
+2021-10-21 21:00:00 - ERROR - 【空头开仓】code='M2201.XDCE', amount=1, price=3246.0
+
+2021-10-22 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-22 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827073, 'order_id': 1653827073, 'time': datetime.datetime(2021, 10, 21, 21, 0), 'amount': 1, 'price': 3249.0})
+
+2021-10-22 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827074, 'order_id': 1653827074, 'time': datetime.datetime(2021, 10, 21, 21, 0), 'amount': 1, 'price': 3246.0})
+
+2021-10-22 15:30:00 - INFO  - 一天结束
+
+2021-10-22 15:30:00 - INFO  - ##############################################################
+
+2021-10-22 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-22 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827075 security=M2201.XDCE mode=OrderTargetAmount: _amount=5 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-22 21:00:00 error=)
+
+2021-10-22 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827075 security=M2201.XDCE mode=OrderTargetAmount: _amount=5 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-22 21:00:00 error=) trade price: 3279.0, amount:1, commission: 1.5
+
+2021-10-22 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827075 security=M2201.XDCE mode=OrderTargetAmount: _amount=5 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-22 21:00:00 error=)
+
+2021-10-22 21:00:00 - ERROR - 【多头开仓】code='M2201.XDCE', amount=1, price=3279.0
+
+2021-10-22 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827076 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-22 21:00:00 error=)
+
+2021-10-22 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827076 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-22 21:00:00 error=) trade price: 3276.0, amount:1, commission: 1.5
+
+2021-10-22 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827076 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-22 21:00:00 error=)
+
+2021-10-22 21:00:00 - ERROR - 【空头开仓】code='M2201.XDCE', amount=1, price=3276.0
+
+2021-10-25 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-25 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827075, 'order_id': 1653827075, 'time': datetime.datetime(2021, 10, 22, 21, 0), 'amount': 1, 'price': 3279.0})
+
+2021-10-25 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827076, 'order_id': 1653827076, 'time': datetime.datetime(2021, 10, 22, 21, 0), 'amount': 1, 'price': 3276.0})
+
+2021-10-25 15:30:00 - INFO  - 一天结束
+
+2021-10-25 15:30:00 - INFO  - ##############################################################
+
+2021-10-25 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-25 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827077 security=M2201.XDCE mode=OrderTargetAmount: _amount=6 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-25 21:00:00 error=)
+
+2021-10-25 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827077 security=M2201.XDCE mode=OrderTargetAmount: _amount=6 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-25 21:00:00 error=) trade price: 3294.0, amount:1, commission: 1.5
+
+2021-10-25 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827077 security=M2201.XDCE mode=OrderTargetAmount: _amount=6 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-25 21:00:00 error=)
+
+2021-10-25 21:00:00 - ERROR - 【多头开仓】code='M2201.XDCE', amount=1, price=3294.0
+
+2021-10-25 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827078 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-25 21:00:00 error=)
+
+2021-10-25 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827078 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-25 21:00:00 error=) trade price: 3291.0, amount:1, commission: 1.5
+
+2021-10-25 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827078 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-25 21:00:00 error=)
+
+2021-10-25 21:00:00 - ERROR - 【空头开仓】code='M2201.XDCE', amount=1, price=3291.0
+
+2021-10-26 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-26 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827077, 'order_id': 1653827077, 'time': datetime.datetime(2021, 10, 25, 21, 0), 'amount': 1, 'price': 3294.0})
+
+2021-10-26 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827078, 'order_id': 1653827078, 'time': datetime.datetime(2021, 10, 25, 21, 0), 'amount': 1, 'price': 3291.0})
+
+2021-10-26 15:30:00 - INFO  - 一天结束
+
+2021-10-26 15:30:00 - INFO  - ##############################################################
+
+2021-10-26 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-26 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827079 security=M2201.XDCE mode=OrderTargetAmount: _amount=0 style=MarketOrderStyle: _limit_price=0.0 side=long action=close margin=False entrust_time=2021-10-26 21:00:00 error=)
+
+2021-10-26 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827079 security=M2201.XDCE mode=OrderTargetAmount: _amount=0 style=MarketOrderStyle: _limit_price=0.0 side=long action=close margin=False entrust_time=2021-10-26 21:00:00 error=) trade price: 3266.0, amount:6, commission: 9.0
+
+2021-10-26 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827079 security=M2201.XDCE mode=OrderTargetAmount: _amount=0 style=MarketOrderStyle: _limit_price=0.0 side=long action=close margin=False entrust_time=2021-10-26 21:00:00 error=)
+
+2021-10-26 21:00:00 - ERROR - 【多头平仓】code='M2201.XDCE', amount=6, price=3266.0, avg_cost=3253.0, earnings=780.0
+
+2021-10-26 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827080 security=M2201.XDCE mode=OrderTargetAmount: _amount=4 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-26 21:00:00 error=)
+
+2021-10-26 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827080 security=M2201.XDCE mode=OrderTargetAmount: _amount=4 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-26 21:00:00 error=) trade price: 3266.0, amount:1, commission: 1.5
+
+2021-10-26 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827080 security=M2201.XDCE mode=OrderTargetAmount: _amount=4 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-26 21:00:00 error=)
+
+2021-10-26 21:00:00 - ERROR - 【空头开仓】code='M2201.XDCE', amount=1, price=3266.0
+
+2021-10-27 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-27 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827079, 'order_id': 1653827079, 'time': datetime.datetime(2021, 10, 26, 21, 0), 'amount': 6, 'price': 3266.0})
+
+2021-10-27 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827080, 'order_id': 1653827080, 'time': datetime.datetime(2021, 10, 26, 21, 0), 'amount': 1, 'price': 3266.0})
+
+2021-10-27 15:30:00 - INFO  - 一天结束
+
+2021-10-27 15:30:00 - INFO  - ##############################################################
+
+2021-10-27 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-27 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827081 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-27 21:00:00 error=)
+
+2021-10-27 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827081 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-27 21:00:00 error=) trade price: 3251.0, amount:1, commission: 1.5
+
+2021-10-27 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827081 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-27 21:00:00 error=)
+
+2021-10-27 21:00:00 - ERROR - 【多头开仓】code='M2201.XDCE', amount=1, price=3251.0
+
+2021-10-27 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827082 security=M2201.XDCE mode=OrderTargetAmount: _amount=0 style=MarketOrderStyle: _limit_price=0.0 side=short action=close margin=False entrust_time=2021-10-27 21:00:00 error=)
+
+2021-10-27 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827082 security=M2201.XDCE mode=OrderTargetAmount: _amount=0 style=MarketOrderStyle: _limit_price=0.0 side=short action=close margin=False entrust_time=2021-10-27 21:00:00 error=) trade price: 3251.0, amount:4, commission: 6.0
+
+2021-10-27 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827082 security=M2201.XDCE mode=OrderTargetAmount: _amount=0 style=MarketOrderStyle: _limit_price=0.0 side=short action=close margin=False entrust_time=2021-10-27 21:00:00 error=)
+
+2021-10-27 21:00:00 - ERROR - 【空头平仓】code='M2201.XDCE', amount=4, price=3251.0, avg_cost=3269.75, earnings=750.0
+
+2021-10-28 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-28 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827081, 'order_id': 1653827081, 'time': datetime.datetime(2021, 10, 27, 21, 0), 'amount': 1, 'price': 3251.0})
+
+2021-10-28 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827082, 'order_id': 1653827082, 'time': datetime.datetime(2021, 10, 27, 21, 0), 'amount': 4, 'price': 3251.0})
+
+2021-10-28 15:30:00 - INFO  - 一天结束
+
+2021-10-28 15:30:00 - INFO  - ##############################################################
+
+2021-10-28 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-28 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827083 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-28 21:00:00 error=)
+
+2021-10-28 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827083 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-28 21:00:00 error=) trade price: 3256.0, amount:1, commission: 1.5
+
+2021-10-28 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827083 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-28 21:00:00 error=)
+
+2021-10-28 21:00:00 - ERROR - 【多头开仓】code='M2201.XDCE', amount=1, price=3256.0
+
+2021-10-28 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827084 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-28 21:00:00 error=)
+
+2021-10-28 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827084 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-28 21:00:00 error=) trade price: 3253.0, amount:1, commission: 1.5
+
+2021-10-28 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827084 security=M2201.XDCE mode=OrderTargetAmount: _amount=1 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-28 21:00:00 error=)
+
+2021-10-28 21:00:00 - ERROR - 【空头开仓】code='M2201.XDCE', amount=1, price=3253.0
+
+2021-10-29 15:30:00 - INFO  - 函数运行时间(after_market_close):15:30:00
+
+2021-10-29 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827083, 'order_id': 1653827083, 'time': datetime.datetime(2021, 10, 28, 21, 0), 'amount': 1, 'price': 3256.0})
+
+2021-10-29 15:30:00 - INFO  - 成交记录：UserTrade({'trade_id': 1653827084, 'order_id': 1653827084, 'time': datetime.datetime(2021, 10, 28, 21, 0), 'amount': 1, 'price': 3253.0})
+
+2021-10-29 15:30:00 - INFO  - 一天结束
+
+2021-10-29 15:30:00 - INFO  - ##############################################################
+
+2021-10-29 21:00:00 - INFO  - 函数运行时间(market_open):21:00:00
+
+2021-10-29 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827085 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-29 21:00:00 error=)
+
+2021-10-29 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827085 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-29 21:00:00 error=) trade price: 3224.0, amount:1, commission: 1.5
+
+2021-10-29 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827085 security=M2201.XDCE mode=OrderTargetAmount: _amount=3 style=MarketOrderStyle: _limit_price=0.0 side=long action=open margin=False entrust_time=2021-10-29 21:00:00 error=)
+
+2021-10-29 21:00:00 - ERROR - 【多头开仓】code='M2201.XDCE', amount=1, price=3224.0
+
+2021-10-29 21:00:00 - INFO  - 订单已提交：FuturesOrder(entrust_id=1653827086 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-29 21:00:00 error=)
+
+2021-10-29 21:00:00 - INFO  - order FuturesOrder(entrust_id=1653827086 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-29 21:00:00 error=) trade price: 3221.0, amount:1, commission: 1.5
+
+2021-10-29 21:00:00 - INFO  - 订单已委托：FuturesOrder(entrust_id=1653827086 security=M2201.XDCE mode=OrderTargetAmount: _amount=2 style=MarketOrderStyle: _limit_price=0.0 side=short action=open margin=False entrust_time=2021-10-29 21:00:00 error=)
+
+2021-10-29 21:00:00 - ERROR - 【空头开仓】code='M2201.XDCE', amount=1, price=3221.0
