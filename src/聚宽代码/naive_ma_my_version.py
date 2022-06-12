@@ -188,15 +188,21 @@ class Instrument:
     def get_current_long_position(self, code=None, pindex=0):
         code = code or self.dom
         if code in self.context.subportfolios[pindex].long_positions.keys():
-            return self.context.subportfolios[pindex].long_positions[code].total_amount
+            pos = self.context.subportfolios[pindex].long_positions[code].total_amount
+            self.long_positions[code] = pos
+            return pos
         else:
+            self.long_positions[code] = 0
             return 0
 
     def get_current_short_position(self, code=None, pindex=0):
         code = code or self.dom
         if code in self.context.subportfolios[pindex].short_positions.keys():
-            return self.context.subportfolios[pindex].short_positions[code].total_amount
+            pos = self.context.subportfolios[pindex].short_positions[code].total_amount
+            self.short_positions[code] = pos
+            return pos
         else:
+            self.short_positions[code] = 0
             return 0
 
     def get_current_long_short_position(self, code=None, pindex=0):
@@ -238,10 +244,17 @@ class Instrument:
     def get_price_short_position(self, code=None, pindex=0):
         return self._get_position_info(field='price', side='short', code=code, pindex=pindex)
 
-    # def get_earnings_long_position(self, code=None, pindex=0):
-    #     cost = self.get_avg_cost_long_position(code=code, pindex=pindex)
-    #     price = self.get_price_long_position(code=code, pindex=pindex)
-    #     return self._get_position_info(field='earnings', side='long', code=code, pindex=pindex)
+    def get_earnings_long_position(self, code=None, pindex=0):
+        cost = self.get_avg_cost_long_position(code=code, pindex=pindex)
+        price = self.get_price_long_position(code=code, pindex=pindex)
+        pos = self.get_current_long_position(code=code, pindex=pindex)
+        return (price - cost) * pos * self.contract_unit
+
+    def get_earnings_short_position(self, code=None, pindex=0):
+        cost = self.get_avg_cost_short_position(code=code, pindex=pindex)
+        price = self.get_price_short_position(code=code, pindex=pindex)
+        pos = self.get_current_short_position(code=code, pindex=pindex)
+        return (cost - price) * pos * self.contract_unit
 
     #######################
     ## Utility functions ##
@@ -340,8 +353,6 @@ def set_info(context):
     # g.instruments = ['TA','P','CU','ZN','C','AG','RU','AL','L','RB','CS','SF','JD','CF','J','M','V','I']
     g.instruments = ['P']
     g.dict_ins = {code: Instrument(code, context=context, unit='1d') for code in g.instruments}
-
-
 
 
 def before_market_open(context):
@@ -487,6 +498,7 @@ def get_lots(cash: int, ins: Instrument):
 
 ## 收盘后运行函数
 def after_market_close(context):
+    log.error('##############################################################')
     log.error(str('函数运行时间(after_market_close):'+str(context.current_dt.time())))
     # # 得到当天所有成交记录
     # trades = get_trades()
@@ -495,9 +507,23 @@ def after_market_close(context):
 
     # current positions
     for ins in g.dict_ins.values():
-        long_pos, short_pos = ins.get_current_long_short_position()
-        log.error('【品种持仓】ins="{}", 多头={}, 空头={}, 收盘价={}'.format(ins.ins, long_pos, short_pos, ins.last_close_price_dom))
+        for code, lots in ins.long_positions.items():
+            if lots > 0:
+                lots = ins.get_current_long_position(code=code)
+                if lots > 0:
+                    earnings = ins.get_earnings_long_position(code=code)
+                    log.error('【日末多头持仓】code={}, lots={}, earnings={}'.format(code, lots, earnings))
 
+        for code, lots in ins.short_positions.items():
+            if lots > 0:
+                lots = ins.get_current_short_position(code=code)
+                if lots > 0:
+                    earnings = ins.get_earnings_short_position(code=code)
+                    log.error('【日末空头持仓】code={}, lots={}, earnings={}'.format(code, lots, earnings))
+
+    # cash balance
+    cash = context.portfolio.available_cash
+    log.error('【账户余额】cash={}'.format(cash))
     log.error('##############################################################')
 
 
