@@ -71,8 +71,6 @@ dict_code = {
 }
 
 
-
-
 URL = 'http://stock2.finance.sina.com.cn/futures/api/json.php/IndexService.getInnerFuturesDailyKLine?symbol={}'
 
 
@@ -91,7 +89,7 @@ for jys, lst_code in dict_code.items():
 
 		df_price.columns = ['date', 'open', 'high', 'low', 'close', 'volume']
 		df_price['code'] = code
-		df_price['name'] = name
+		df_price['name'] = name.replace('连续', '')
 		df_price[['open', 'high', 'low', 'close']] = df_price[['open', 'high', 'low', 'close']].astype(float)
 		result.append(df_price)
 
