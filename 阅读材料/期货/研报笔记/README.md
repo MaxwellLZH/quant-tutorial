@@ -1,7 +1,6 @@
 ## 商品期货CTA专题报告（一）量化CTA策略综述
 [报告链接](https://max.book118.com/html/2018/1027/8123073066001130.shtm)
 
-
 ### 趋势策略
 从另一个角度看，趋势策略的盈利类似于一个跨式套利（买入一个看涨期权同时买入一个行权价格更低的看跌期权）。套利的本质是做多波动率。
 
@@ -67,7 +66,6 @@ TR(True Range) = Max(
 
 
 
-
 ## 商品期货CTA专题报告（一）量化CTA策略综述
 [报告链接](https://max.book118.com/html/2017/0930/135263279.shtm)
 
@@ -87,3 +85,5 @@ Sig = Sum([Ma(i) - Ma(i+1)] / abs[Ma(i) - Ma(i+1)]) (i=1, 2, 3, 4 .... N)
 <!-- 
 <img src="https://render.githubusercontent.com/render/math?math=e%5E%7Bi%20pi%7D%20%3D%20-1">
  -->
+
+ 
