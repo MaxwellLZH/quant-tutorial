@@ -41,10 +41,32 @@ class Instrument:
         self.ins = ins
         self.context = context
         self.unit = unit
-        self.long_positions = {}
-        self.short_positions = {}
         self.params = {}
 
+    @property
+    def long_positions(self) -> Dict[str, floag]:
+        codes = get_future_contracts(self.ins)
+        long_positions = self.context.subportfolios[0].long_positions
+        output = {}
+        for code in codes:
+            if code in long_positions:
+                amt = long_positions[code].total_amount
+                if amt > 0:
+                    output[code] = amt
+        return output
+    
+    @property
+    def short_positions(self) -> Dict[str, floag]:
+        codes = get_future_contracts(self.ins)
+        short_positions = self.context.subportfolios[0].short_positions
+        output = {}
+        for code in codes:
+            if code in short_positions:
+                amt = short_positions[code].total_amount
+                if amt > 0:
+                    output[code] = amt
+        return output
+        
     @property
     def dom(self):
         return get_dominant_future(self.ins)
@@ -119,52 +141,44 @@ class Instrument:
 
     def build_target_long_position(self, amount, code=None, pindex=0, close_today=False):
         code = code or self.dom
-        avg_cost = self.get_avg_cost_long_position(code=code, pindex=pindex)
-
         order = order_target(code, amount=amount, style=None, side='long', pindex=pindex, close_today=close_today)
 
         if order is not None:
-            self.long_positions[code] = order.amount
-            
             if order.action == 'open':
                 # 开仓是没有浮盈浮亏的，所以不需要记录
                 log.error(f"【多头开仓】code='{code}', amount={order.amount}, price={order.price}")
             elif order.action == 'close':
+                avg_cost = self.get_avg_cost_long_position(code=code, pindex=pindex)
                 # 平仓需要计算浮盈浮亏
                 price = order.price
                 earnings = (price - avg_cost) * order.amount * self.contract_unit
                 log.error(f"【多头平仓】code='{code}', amount={order.amount}, price={order.price}, avg_cost={avg_cost}, earnings={earnings}")
             else:
                 raise ValueError('Order type not supported: {}'.format(order.action))
-            
             return order
         else:
-            # log.error('【多头开仓失败】code: {} amount: {}'.format(code, amount))
+            log.error('【多头开仓失败】code: {} amount: {}'.format(code, amount))
             return None
 
     def build_target_short_position(self, amount, code=None, pindex=0, close_today=False):
         code = code or self.dom
-        avg_cost = self.get_avg_cost_short_position(code=code, pindex=pindex)
-
         order = order_target(code, amount=amount, style=None, side='short', pindex=pindex, close_today=close_today)
         
         if order is not None:
-            self.short_positions[code] = order.amount
-            
             if order.action == 'open':
                 # 开仓是没有浮盈浮亏的，所以不需要记录
                 log.error(f"【空头开仓】code='{code}', amount={order.amount}, price={order.price}")
             elif order.action == 'close':
+                avg_cost = self.get_avg_cost_short_position(code=code, pindex=pindex)
                 # 平仓需要计算浮盈浮亏
                 price = order.price
                 earnings = (avg_cost - price) * order.amount * self.contract_unit
                 log.error(f"【空头平仓】code='{code}', amount={order.amount}, price={order.price}, avg_cost={avg_cost}, earnings={earnings}")
             else:
                 raise ValueError('Order type not supported: {}'.format(order.action))
-
             return order
         else:
-            # log.error('【空头开仓失败】code: {} amount: {}'.format(code, amount))
+            log.error('【空头开仓失败】code: {} amount: {}'.format(code, amount))
             return None
 
     def close_long_position(self, code=None):
@@ -186,24 +200,10 @@ class Instrument:
                 self.close_short_position(code=code)
 
     def get_current_long_position(self, code=None, pindex=0):
-        code = code or self.dom
-        if code in self.context.subportfolios[pindex].long_positions.keys():
-            pos = self.context.subportfolios[pindex].long_positions[code].total_amount
-            self.long_positions[code] = pos
-            return pos
-        else:
-            self.long_positions[code] = 0
-            return 0
+        return self.long_positions.get(code, 0)
 
     def get_current_short_position(self, code=None, pindex=0):
-        code = code or self.dom
-        if code in self.context.subportfolios[pindex].short_positions.keys():
-            pos = self.context.subportfolios[pindex].short_positions[code].total_amount
-            self.short_positions[code] = pos
-            return pos
-        else:
-            self.short_positions[code] = 0
-            return 0
+        return self.short_positions.get(code, 0)
 
     def get_current_long_short_position(self, code=None, pindex=0):
         long_pos = self.get_current_long_position(code=code, pindex=pindex)
@@ -308,7 +308,6 @@ class Instrument:
                             'WR':'WR8888.XSGE', 'WS':'WS8888.XZCE', 'WT':'WT8888.XZCE', 'Y':'Y8888.XDCE', 
                             'ZC':'ZC8888.XZCE', 'ZN':'ZN8888.XSGE'}
         return future_code_list[symbol]
-
 
 
 
