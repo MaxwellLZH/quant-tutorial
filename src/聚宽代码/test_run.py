@@ -1,19 +1,12 @@
-# TODO: 移仓换月  OK
-# TODO: ATR止损
-# TODO: 调整资金分配比例
-# TODO: 一手都不够买的情况
-# 对比使用指数合约 vs. 使用主力合约生成信号
+# 导入函数库
+from jqdata import *
+import random
 
-
-import functools
-import talib
-from jqdata import * 
 from collections import defaultdict
+import functools
 from functools import lru_cache
 import numpy as np
 from typing import *
-
-
 
 
 @functools.lru_cache()
@@ -307,228 +300,88 @@ class Instrument:
                             'TC':'TC8888.XZCE', 'TF':'TF8888.CCFX', 'V':'V8888.XDCE', 'WH':'WH8888.XZCE', 
                             'WR':'WR8888.XSGE', 'WS':'WS8888.XZCE', 'WT':'WT8888.XZCE', 'Y':'Y8888.XDCE', 
                             'ZC':'ZC8888.XZCE', 'ZN':'ZN8888.XSGE'}
-        return future_code_list[symbol]
+        return future_code_list[ins]
 
 
 
 
+
+## 初始化函数，设定基准等等
 def initialize(context):
-    # 设置参数
     set_info(context)
-    # 不设定基准，在多品种的回测当中基准没有参考意义
-    set_benchmark('P8888.XDCE')
+    # 设定沪深300作为基准
+    set_benchmark('000300.XSHG')
     # 开启动态复权模式(真实价格)
     set_option('use_real_price', True)
     # 过滤掉order系列API产生的比error级别低的log
-    log.set_level('order', 'info')
+    # log.set_level('order', 'error')
+    # 输出内容到日志 log.info()
+    log.info('初始函数开始运行且全局只运行一次')
+
     ### 期货相关设定 ###
     # 设定账户为金融账户
-    set_subportfolios([SubPortfolioConfig(cash=context.portfolio.starting_cash, type='futures')])
-    # 期货类每笔交易时的手续费是：买入时万分之2.5,卖出时万分之2.5,平今仓为万分之2.5
-    set_order_cost(OrderCost(open_commission=0.00025, close_commission=0.00025,close_today_commission=0.00025), type='index_futures')
-    # 设定保证金比例15%
+    set_subportfolios([SubPortfolioConfig(cash=context.portfolio.starting_cash, type='index_futures')])
+    # 期货类每笔交易时的手续费是：买入时万分之0.23,卖出时万分之0.23,平今仓为万分之23
+    set_order_cost(OrderCost(open_commission=0.000023, close_commission=0.000023,close_today_commission=0.0023), type='index_futures')
+    # 设定保证金比例
     set_option('futures_margin_rate', 0.15)
-    # 开盘前运行
-    run_daily(before_market_open, time='before_open', reference_security='RB8888.XSGE')
-    # 开盘时运行
-    run_daily(market_open, time='open', reference_security='RB8888.XSGE')
-    # 收盘后运行
-    run_daily(after_market_close, time='after_close', reference_security='RB8888.XSGE')
-    # 设置滑点（单边万5，双边千1）
-    set_slippage(PriceRelatedSlippage(0.001),type='future')
-    set_option("avoid_future_data", True)
+
+    # 设置期货交易的滑点
+    set_slippage(StepRelatedSlippage(2))
+    # 运行函数（reference_security为运行时间的参考标的；传入的标的只做种类区分，因此传入'IF8888.CCFX'或'IH1602.CCFX'是一样的）
+    # 注意：before_open/open/close/after_close等相对时间不可用于有夜盘的交易品种，有夜盘的交易品种请指定绝对时间（如9：30）
+      # 开盘前运行
+    run_daily( before_market_open, time='09:00', reference_security='IF8888.CCFX')
+      # 开盘时运行
+    run_daily( market_open, time='09:30', reference_security='IF8888.CCFX')
+      # 收盘后运行
+    run_daily( after_market_close, time='15:30', reference_security='IF8888.CCFX')
 
 
 def set_info(context):
-    g.FastWindow = 5 # 快线窗口长度
-    g.SlowWindow = 20 # 慢线窗口长度
-    g.MAType = talib.MA_Type.EMA
+    g.ins = Instrument(ins="AG", context=context)
 
-    g.stop = 0.05 # 止损比例
-    g.margin_rate = 0.15 # 定义保证金率
-    g.wait_period = 20  # 止损后等待重新进入的天数
-
-    # 交易的期货品种信息
-    # g.instruments = ['TA','P','CU','ZN','C','AG','RU','AL','L','RB','CS','SF','JD','CF','J','M','V','I']
-    g.instruments = ['P']
-    g.dict_ins = {code: Instrument(code, context=context, unit='1d') for code in g.instruments}
-
-
+## 开盘前运行函数
 def before_market_open(context):
     # 输出运行时间
-    log.error('函数运行时间(before_market_open)：'+str(context.current_dt.time()))
-    
-    # 过滤无主力合约的品种，传入并修改期货字典信息
-    for code, ins in g.dict_ins.items():
-        if ins.dom == '':
-            pass
-
-        # 判断是否需要移仓换月
-        ins.move_position_to_dominant_contract()
-        
-        # 每个品种使用初始资金starting_cash的10%开仓
-        lots = get_lots(context.portfolio.starting_cash / len(g.instruments), ins)
-        ins.set('trading_lots', lots)
-
+    log.info('函数运行时间(before_market_open)：'+str(context.current_dt.time()))
 
 ## 开盘时运行函数
 def market_open(context):
-    # 输出函数运行时间
-    log.error('函数运行时间(market_open):'+str(context.current_dt.time()))
+    ins = g.ins
+    lst_amount = [5, 10, 20, 30]
 
-    dict_ins: Dict[str, Instrument] = g.dict_ins
-    for code, ins in dict_ins.items():
+    if random.random() < 0.5:
+        ins.build_target_long_position(amount=random.choice(lst_amount))
+    
+    if random.random() < 0.3:
+        ins.build_target_short_position(amount=random.choice(lst_amount))
 
-        if ins.dom == '':
-            continue
-
-        log.error('【开始交易品种 {}】'.format(ins.ins))
-
-        # 获取当月合约交割日期, 当月合约交割日当天不开仓
-        end_date = get_CCFX_end_date(ins.dom)
-        if (context.current_dt.date() == end_date):
-            log.error('合约交割日期，跳过......')
-            return
-
-        # 买入卖出信号
-        signal = generate_trading_signal(ins)
-
-        # 在主力合约上买卖
-        dom = ins.dom
-        long_pos, short_pos = ins.get_current_long_position(code=dom), ins.get_current_short_position(code=dom)
-        if signal == 1 and long_pos == 0:
-            if short_pos > 0:
-                ins.close_short_position(code=dom)
-            order = ins.build_target_long_position(code=dom, amount=ins.get("trading_lots"))
-            if order is not None:
-                # 开仓成功，记录真实的开仓价格
-                ins.set("ref_price", order.price)
-        elif signal == -1 and short_pos == 0:
-            if long_pos > 0:
-                ins.close_long_position(code=dom)
-            order = ins.build_target_short_position(code=dom, amount=ins.get("trading_lots"))
-            if order is not None:
-                ins.set("ref_price", order.price)
-        else:
-            # 当日没有新的开仓行为时，判断是否需要止损
-            trailing_stop(ins)
-
-        # 更新reentry的标识
-        update_reentry_flag(ins)
-
-        # 记时加1
-        ins.set("timer", ins.get("timer", 0) + 1)
-
-
-def generate_trading_signal(ins: Instrument) -> int:
-    df_price = ins.get_price_dom(count=g.SlowWindow+10, fields=['open', 'close'])
-    ma_fast = talib.MA(df_price['close'], g.FastWindow, matype=g.MAType).values[-1]
-    ma_slow = talib.MA(df_price['close'], g.SlowWindow, matype=g.MAType).values[-1]
-    if ma_fast > ma_slow:
-        cross = 1
-    elif ma_fast < ma_slow:
-        cross = -1
-    else:
-        cross = 0
-
-    if cross == 1 and not ins.get("reentry_long_flag", False):
-        return 1 
-    elif cross == -1 and not ins.get("reentry_short_flag", False):
-        return -1
-    else:
-        return 0
-
-
-# 追踪止损模块（百分比止损）
-def trailing_stop(ins: Instrument) -> Tuple[bool, bool]:
-    long_pos, short_pos = ins.get_current_long_short_position()
-    cur_price = ins.last_close_price_dom
-    if long_pos > 0:
-        ref_price = ins.get("ref_price")
-        ref_price = max(cur_price, ref_price)
-        ins.set("ref_price", ref_price)
-        
-        if cur_price < ref_price * (1 - g.stop):
-            log.error('【多头止损】ref_price: {} cur_price: {}'.format(ref_price, cur_price))
-            ins.close_long_position()
-            # 止损后重新进入的倒计时
-            ins.set("timer", 0)
-            ins.set("reentry_long_flag", True)
-
-    if short_pos > 0:
-        ref_price = ins.get("ref_price")
-        ref_price = min(cur_price, ref_price)
-        ins.set("ref_price", ref_price)
-        
-        if cur_price > ref_price * (1 + g.stop):
-            log.error('【空头止损】ref_price: {} cur_price: {}'.format(ref_price, cur_price))
-            ins.close_short_position()
-            # 止损后重新进入的倒计时
-            ins.set("timer", 0)
-            ins.set("reentry_short_flag", True)
-
-
-def update_reentry_flag(ins: Instrument):
-    # 防重入模块：上一次止损后20根bar内不交易，但如果出现价格突破事件则20根bar的限制失效
-    # 设置最高价与最低价（注意：需要错一位，不能算入当前价格）
-    close_price = ins.get_price_dom(count=30, fields=["close"])["close"].values
-    cur_price = close_price[-1]
-    high_price = close_price[-21:-1].max()
-    low_price = close_price[-21:-1].min()
-
-    if ins.get("reentry_long_flag", False):
-        if ins.get("timer") > g.wait_period or cur_price > high_price:
-            log.error("【准入信号】type=多头准入")
-            ins.set("reentry_long_flag", False)
-
-    if ins.get("reentry_short_flag", False):
-        if ins.get("timer") > g.wait_period or cur_price < low_price:
-            log.error("【准入信号】 type=空头准入")
-            ins.set("reentry_short_flag", False)
-
-
-def get_lots(cash: int, ins: Instrument):
-    open_price = ins.last_close_price_dom
-    contract_size = ins.contract_unit
-    # 返回手数（价格*合约规模=名义价值）
-    lots = cash / (open_price * g.margin_rate * contract_size)
-    return int(lots)
+    if random.random() < 0.1:
+        ins.close_all_long_positions()
+    
+    if random.random() < 0.1:
+        ins.close_all_short_positions()
 
 
 ## 收盘后运行函数
 def after_market_close(context):
-    log.error('##############################################################')
-    log.error(str('函数运行时间(after_market_close):'+str(context.current_dt.time())))
-    # # 得到当天所有成交记录
-    # trades = get_trades()
-    # for _trade in trades.values():
-    #     log.error('成交记录：'+str(_trade))
+    log.info(str('函数运行时间(after_market_close):'+str(context.current_dt.time())))
+    # 得到当天所有成交记录
+    trades = get_trades()
+    for _trade in trades.values():
+        log.info('成交记录：'+str(_trade))
+    log.info('一天结束')
+    log.info('##############################################################')
 
-    # current positions
-    for ins in g.dict_ins.values():
-        for code, lots in ins.long_positions.items():
-            if lots > 0:
-                lots = ins.get_current_long_position(code=code)
-                if lots > 0:
-                    earnings = ins.get_earnings_long_position(code=code)
-                    log.error('【日末多头持仓】code={}, lots={}, earnings={}'.format(code, lots, earnings))
+    ins: Instrument = g.ins
+    
+    log.info("long positions: {}".format(ins.long_positions))
+    log.info("short positions: {}".format(ins.short_positions))
 
-        for code, lots in ins.short_positions.items():
-            if lots > 0:
-                lots = ins.get_current_short_position(code=code)
-                if lots > 0:
-                    earnings = ins.get_earnings_short_position(code=code)
-                    log.error('【日末空头持仓】code={}, lots={}, earnings={}'.format(code, lots, earnings))
-
-    # cash balance
-    cash = context.portfolio.available_cash
-    log.error('【账户余额】cash={}'.format(cash))
-    log.error('##############################################################')
-
-
-
+########################## 获取期货合约信息，请保留 #################################
 # 获取金融期货合约到期日
-def get_CCFX_end_date(fature_code):
+def get_CCFX_end_date(future_code):
     # 获取金融期货合约到期日
-    return get_security_info(fature_code).end_date
+    return get_security_info(future_code).end_date
 
