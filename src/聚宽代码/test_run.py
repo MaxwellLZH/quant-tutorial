@@ -134,18 +134,20 @@ class Instrument:
 
     def build_target_long_position(self, amount, code=None, pindex=0, close_today=False):
         code = code or self.dom
+        log.error(f"【多头下单】code={code}, target={amount}")
         order = order_target(code, amount=amount, style=None, side='long', pindex=pindex, close_today=close_today)
 
         if order is not None:
             if order.action == 'open':
                 # 开仓是没有浮盈浮亏的，所以不需要记录
-                log.error(f"【多头开仓】code='{code}', amount={order.amount}, price={order.price}")
+                log.error(f"【多头开仓】code='{code}', target_amount={order.amount}, price={order.price}")
             elif order.action == 'close':
                 avg_cost = self.get_avg_cost_long_position(code=code, pindex=pindex)
                 # 平仓需要计算浮盈浮亏
                 price = order.price
-                earnings = (price - avg_cost) * order.amount * self.contract_unit
-                log.error(f"【多头平仓】code='{code}', amount={order.amount}, price={order.price}, avg_cost={avg_cost}, earnings={earnings}")
+                if avg_cost is not None:
+                    earnings = (price - avg_cost) * order.amount * self.contract_unit
+                    log.error(f"【多头平仓】code='{code}', amount={order.amount}, price={order.price}, avg_cost={avg_cost}, earnings={earnings}")
             else:
                 raise ValueError('Order type not supported: {}'.format(order.action))
             return order
@@ -155,6 +157,7 @@ class Instrument:
 
     def build_target_short_position(self, amount, code=None, pindex=0, close_today=False):
         code = code or self.dom
+        log.error(f"【空头下单】code={code}, target_amount={amount}")
         order = order_target(code, amount=amount, style=None, side='short', pindex=pindex, close_today=close_today)
         
         if order is not None:
@@ -165,8 +168,9 @@ class Instrument:
                 avg_cost = self.get_avg_cost_short_position(code=code, pindex=pindex)
                 # 平仓需要计算浮盈浮亏
                 price = order.price
-                earnings = (avg_cost - price) * order.amount * self.contract_unit
-                log.error(f"【空头平仓】code='{code}', amount={order.amount}, price={order.price}, avg_cost={avg_cost}, earnings={earnings}")
+                if avg_cost is not None:
+                    earnings = (avg_cost - price) * order.amount * self.contract_unit
+                    log.error(f"【空头平仓】code='{code}', amount={order.amount}, price={order.price}, avg_cost={avg_cost}, earnings={earnings}")
             else:
                 raise ValueError('Order type not supported: {}'.format(order.action))
             return order
@@ -303,9 +307,6 @@ class Instrument:
         return future_code_list[ins]
 
 
-
-
-
 ## 初始化函数，设定基准等等
 def initialize(context):
     set_info(context)
@@ -375,9 +376,8 @@ def after_market_close(context):
     log.info('##############################################################')
 
     ins: Instrument = g.ins
-    
-    log.info("long positions: {}".format(ins.long_positions))
-    log.info("short positions: {}".format(ins.short_positions))
+    log.error("日末多头: {}".format(ins.long_positions))
+    log.error("日末空头: {}".format(ins.short_positions))
 
 ########################## 获取期货合约信息，请保留 #################################
 # 获取金融期货合约到期日
