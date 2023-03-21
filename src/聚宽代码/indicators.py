@@ -9,10 +9,9 @@ from typing import *
 
 class Indicator:
 
-    def __init__(self, code: str, unit="1d", context=None):
+    def __init__(self, code: str, unit="1d"):
         self.code = code
         self.unit = unit
-        self.context = context
         
     def __repr__(self):
         return f"Indicator(code={self.code})"
@@ -24,6 +23,9 @@ class Indicator:
             return df[return_field]
         else:
             return df
+        
+    def get_current_date(self):
+        return self.get_price_history(count=3).index[-1]
 
     def ma(self, window: int, ma_type: int = 1):
         """ 
@@ -41,12 +43,23 @@ class Indicator:
         return talib.MA(df_close, window, matype=ma_type).values[-1]
     
     def sip(self, start_date, position):
-        current_date = self.context.current_dt
+        current_date = self.get_current_date()
         days = (current_date - start_date).days
         df = self.get_price_history(count=days)
         if position == "long":
             return df['high'].max()
         elif position == "short":
             return df['low'].min()
+        else:
+            raise ValueError("Only long and short is supported for position keyword.")
+
+    def sip(self, start_date, position):
+        current_date = self.get_current_date()
+        days = (current_date - start_date).days
+        df = self.get_price_history(count=days)
+        if position == "long":
+            return df['close'].max()
+        elif position == "short":
+            return df['close'].min()
         else:
             raise ValueError("Only long and short is supported for position keyword.")
