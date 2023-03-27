@@ -5,6 +5,7 @@ from collections import defaultdict
 from functools import lru_cache
 import numpy as np
 from typing import *
+from dateutil.parser import parse
 
 
 class Indicator:
@@ -16,16 +17,29 @@ class Indicator:
     def __repr__(self):
         return f"Indicator(code={self.code})"
 
-    def get_price_history(self, count, unit=None, return_field=None):
+    def get_price_history(self, count=None, start_date=None, unit=None, return_field=None):
         unit = unit or self.unit
+
+        if start_date is not None:
+            if isinstance(start_date, str):
+                start_date = parse(start_date)
+            current_date = self.get_current_date()
+            count = (current_date - start_date).days
+
+        if count is None:
+            raise ValueError("Both start_date and count are None")
+
         df = attribute_history(self.code, count=count, unit=unit, fields=['open','close','high','low','volume','money'], skip_paused=True)
+        if start_date is not None:
+            df = df.loc[start_date:]
+
         if return_field is not None:
             return df[return_field]
         else:
             return df
         
     def get_current_date(self):
-        return self.get_price_history(count=3).index[-1]
+        return self.get_price_history(count=10).index[-1]
 
     def ma(self, window: int, ma_type: int = 1):
         """ 
@@ -43,9 +57,7 @@ class Indicator:
         return talib.MA(df_close, window, matype=ma_type).values[-1]
     
     def sip(self, start_date, position):
-        current_date = self.get_current_date()
-        days = (current_date - start_date).days
-        df = self.get_price_history(count=days)
+        df = self.get_price_history(start_date=start_date)
         if position == "long":
             return df['high'].max()
         elif position == "short":
@@ -54,9 +66,7 @@ class Indicator:
             raise ValueError("Only long and short is supported for position keyword.")
 
     def sip(self, start_date, position):
-        current_date = self.get_current_date()
-        days = (current_date - start_date).days
-        df = self.get_price_history(count=days)
+        df = self.get_price_history(start_date=start_date)
         if position == "long":
             return df['close'].max()
         elif position == "short":
