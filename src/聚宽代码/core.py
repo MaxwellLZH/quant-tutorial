@@ -151,9 +151,35 @@ class MACrossIndicator(BaseIndicator):
 
 class BaseStopLoss:
 
-    def update_stop_loss_price(self):
+    def __init__(self, code, unit, side: str):
+        """
+        side: one of {long, short}
+        """
+        self.code = code
+        self.unit = unit
+        if side not in ('long', 'short'):
+            raise ValueError("side must be one of long, short.")
+        self.side = side
+
+    def _set_initial_stop_loss(self, open_price):
         raise NotImplementedError
     
+    def _update_stop_loss(self):
+        raise NotImplementedError
+    
+    def update_stop_loss(self):
+        # 多头的止损必须是单调递增的，空头的止损必须是单调递减的
+        orig_stop_loss = self._stop_loss_price
+        new_stop_loss = self._update_stop_loss()
+
+        if self.side == "long" and new_stop_loss > orig_stop_loss:
+            self._stop_loss_price = new_stop_loss
+            log.info(f"【多头止损点更新】code={self.code} from={orig_stop_loss} to={new_stop_loss}")
+        
+        if self.side == "short" and new_stop_loss < orig_stop_loss:
+            self._stop_loss_price = min(self._stop_loss_price, new_stop_loss)
+            log.info(f"【空头止损点更新】code={self.code} from={orig_stop_loss} to={new_stop_loss}")
+
     @property
     def stop_loss_price(self):
         return self._stop_loss_price
