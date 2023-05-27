@@ -1,9 +1,10 @@
-import functools
 import talib
 from jqdata import * 
 from functools import lru_cache
 import pandas as pd
 import numpy as np
+import re
+import math
 from typing import *
 from dateutil.parser import parse
 
@@ -53,23 +54,38 @@ def get_main_cont_future_code(ins):
                         'ZC':'ZC9999.XZCE', 'ZN':'ZN9999.XSGE'}
     return future_code_list[ins]
 
-@functools.lru_cache()
-def get_future_basic_info(dom):
+
+def get_future_basic_info(code):
     """ 获取期货主合约的信息 """
-    from jqdata import jy
-    import re
-    q = query(jy.Fut_ContractMain).filter(jy.Fut_ContractMain.ContractCode==dom.split(".")[0])
+    from math import nan
+    
+    match = re.match(r"(?P<underlying_symbol>[A-Z]{1,})(?P<delivery_month>[0-9]{1,})", code)
+    if not match:
+        raise ValueError("未知期货标的：{}".format(code))
+    
+    if "9999" in code or "8888" in code:
+        code = get_dominant_future(match.groupdict()["underlying_symbol"])
+        match = re.match(r"(?P<underlying_symbol>[A-Z]{1,})(?P<delivery_month>[0-9]{1,})", code)
+            
+    if code.endswith("XZCE"):
+        code = match.groupdict()["underlying_symbol"] + match.groupdict()["delivery_month"][1:]
+        
+    q = query(jy.Fut_ContractMain).filter(jy.Fut_ContractMain.ContractCode == code.split(".")[0])
     result = jy.run_query(query_object=q).to_dict("record")
+
     if result:
         result = result.pop()
-        min_point = re.match("(?P<value>^[0-9]+([.]{1}[0-9]+){0,1})", result["LittlestChangeUnit"]).groupdict(np.nan)["value"]
+        min_point_match = re.match("(?P<value>^[0-9]+([.]{1}[0-9]+){0,1})", str(result["LittlestChangeUnit"]))
+        if min_point_match:
+            min_point = min_point_match.groupdict(nan)["value"]
+        else:
+            min_point = nan
+            
         return {"ContractUnit": result["CMValue"],
-                "PriceScale": float(str(min_point)[:-1] + "1") if float(min_point) < 1 else 1,
-                "MinPoint": float(min_point),
-                "MinMarginRatio": result["InitialMarginRatio"]
-                }
+               "PriceScale": float(str(min_point)[:-1] + "1") if float(min_point) < 1 else 1,
+               "MinPoint": float(min_point)}
     else:
-        log.error('【基础信息获取失败】code: {}'.format(dom))
+        log.error('【基础信息获取失败】code: {}'.format(code))
         return None
     
 
@@ -192,13 +208,24 @@ class BaseStopLoss:
             self._stop_loss_price = min(self._stop_loss_price, new_stop_loss)
             log.info(f"【空头止损点更新】code={self.code} from={orig_stop_loss} to={new_stop_loss}")
 
-    def should_stop_loss(self, current_price) -> bool:
+    def should_stop_loss(self, current_price=None) -> bool:
+        if current_price is None:
+            # 如果不提供current_price, 默认用上一个单位日期的close price
+            current_price = get_price_history(code=self.code, unit=self.unit, count=5)["close"].values[-1]
+
         if self.side == "long" and current_price < self._stop_loss_price:
             return True
         elif self.side == "short" and current_price > self._stop_loss_price:
             return True
         else:
             return False
+        
+    def calculate_max_loss(self, current_price) -> float:
+        # 计算在当前价格下，单位合约下的最大损失
+        if self.side == "long":
+            return max(current_price - self._stop_loss_price, 0)
+        else:
+            return max(self._stop_loss_price - current_price, 0)
 
     @property
     def stop_loss_price(self):
@@ -246,17 +273,114 @@ class ATRStopLossV1(BaseStopLoss):
             self._stop_loss_price = base_price + self.m * atr
 
 
-##############
-## Trade  ###
-#############
+##################################################
+## Trade  
+# 1. 买入价位、盈利目标、止损价位、收益风险比例
+# 2. 风险管理：单笔交易和所有交易的最大可承受损失比例
+# 3. 每笔交易的开仓和止损信号来源
+##################################################
 
 class Trade:
 
-    def __init__(self, code, open_price, side: str, amount: float):
+    def __init__(self, code, order_price, side: str, stop_loss: BaseStopLoss):
         self.code = code
-        self.open_price = open_price
+        self.order_price = order_price
         self.side = side
-        self.amount = amount
+        self.stopper = stop_loss
+        self.lots = None
 
-    def 
+        future_info = get_future_basic_info(code)
+        if future_info is None:
+            raise ValueError(f"无法获取{self.code}基础信息")
+        self.contract_unit = future_info["ContractUnit"]
 
+    def calculate_maximum_lots(self, max_loss_buffer: float) -> int:
+        # calculate the maximum loss for 1 unit
+        max_loss_per_unit = self.stopper.calculate_max_loss(current_price=self.order_price)
+        return math.floor(max_loss_buffer / (max_loss_per_unit * self.contract_unit))
+    
+    def calculate_maximum_loss(self, current_price: float) -> float:
+        if self.lots is None:
+            raise ValueError("Call Trade.execute first.")
+        return self.lots * self.contract_unit * self.stopper.calculate_max_loss(current_price=current_price)
+
+    def open_position(self, lots: int, pindex=0, close_today=False) -> int:
+        """ 执行开仓的交易，返回实际开仓成功的手数 """
+        # TODO: 使用限价单：https://www.joinquant.com/help/api/help#api:OrderStyle
+        order = order_target(self.code, amount=lots, style=None, side=self.side, pindex=pindex, close_today=close_today)
+        
+        if order is not None:
+            self.real_open_price = real_open_price = order.price
+            self.lots = order.amount
+
+            # 用实际的开仓价格重新设置止损
+            self.stopper._set_initial_stop_loss(open_price=real_open_price)
+
+            log.error(f"【开仓】code={self.code} side={self.side} lots={self.lots} real_open_price={real_open_price}")
+            return order.amount
+        else:
+            log.error(f"【开仓失败】code={self.code} side={self.side} lots={self.lots}")
+            return 0
+        
+    def run_daily(self, pindex=0) -> "Trade":
+        """ 在开仓之后，每天更新指标 & 判断是否需要止损。 """
+        
+        self.stopper.update_stop_loss()
+        need_close = self.stopper.should_stop_loss()
+
+        if need_close:
+            order = order_target(self.code, amount=0, style=None, side=self.side, pindex=pindex)
+
+        assert order is not None and order.action == "close"
+        log.error(f"【平仓】code={self.code} side={self.side} lots={self.lots}")
+
+        self.lots = 0
+        # 如果移仓换月了，就返回一个新的Trade对象
+
+
+
+######################
+# 风险管理大脑
+#####################
+
+class Core
+
+# for ins in g.instruments:
+#     RealFuture = get_dominant_future(ins)
+#     if RealFuture == '':
+#         pass
+
+
+# 移仓模块：当主力合约更换时，平当前持仓，更换为最新主力合约        
+# def replace_old_futures(context,ins,dom):
+    
+#     LastFuture = g.MappingReal[ins]
+    
+#     if LastFuture in context.portfolio.long_positions.keys():
+#         lots_long = context.portfolio.long_positions[LastFuture].total_amount
+#         order_target(LastFuture,0,side='long')
+#         order_target(dom,lots_long,side='long')
+#         print('主力合约更换，平多仓换新仓')
+    
+#     if LastFuture in context.portfolio.short_positions.keys():
+#         lots_short = context.portfolio.short_positions[LastFuture].total_amount
+#         order_target(LastFuture,0,side='short')
+#         order_target(dom,lots_short,side='short')
+#         print('主力合约更换，平空仓换新仓')
+
+
+# 获取交易手数函数（ATR倒数头寸）
+def get_lots(cash,symbol):
+    RealFuture = get_dominant_future(symbol)
+    # 获取价格list
+    Price_dict = attribute_history(RealFuture,10,'1d',['open'])
+    # 如果没有数据，返回
+    if len(Price_dict) == 0: 
+        return
+    else:
+        open_future = Price_dict.iloc[-1]
+    # 返回手数
+    if RealFuture in g.ATR.keys():
+        return cash*0.02/(g.ATR[RealFuture]*future_basic_info(RealFuture)['ContractUnit'])
+    else:# 函数运行之初会出现没将future写入ATR字典当中的情况
+        return cash*0.0001/future_basic_info(RealFuture)['ContractUnit']
