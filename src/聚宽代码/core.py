@@ -1,11 +1,12 @@
 import functools
 import talib
 from jqdata import * 
-from collections import defaultdict
 from functools import lru_cache
+import pandas as pd
 import numpy as np
 from typing import *
 from dateutil.parser import parse
+
 
 
 ########################
@@ -70,13 +71,23 @@ def get_future_basic_info(dom):
     else:
         log.error('【基础信息获取失败】code: {}'.format(dom))
         return None
+    
+
+def get_current_date(as_str=False) -> "date":
+    d = get_trade_days(count=10)[-1]
+    return d.strftime("%Y-%m-%d") if as_str else d
+
+
+def get_prev_trading_date(prev: int = 1, as_str=False) -> "date":
+    d = get_trade_days(count=prev+1)[-1-prev]
+    return d.strftime("%Y-%m-%d") if as_str else d
 
 
 def get_price_history(code, unit="1d", count=None, start_date=None, return_field=None):
     if start_date is not None:
         if isinstance(start_date, str):
             start_date = parse(start_date)
-        current_date = attribute_history(code, count=10, unit="1d").index[-1]
+        current_date = get_current_date()
         count = (current_date - start_date).days
 
     if count is None:
@@ -165,7 +176,8 @@ class BaseStopLoss:
         raise NotImplementedError
     
     def _update_stop_loss(self):
-        raise NotImplementedError
+        # 默认止损价格不改变
+        return self._stop_loss_price
     
     def update_stop_loss(self):
         # 多头的止损必须是单调递增的，空头的止损必须是单调递减的
@@ -180,9 +192,58 @@ class BaseStopLoss:
             self._stop_loss_price = min(self._stop_loss_price, new_stop_loss)
             log.info(f"【空头止损点更新】code={self.code} from={orig_stop_loss} to={new_stop_loss}")
 
+    def should_stop_loss(self, current_price) -> bool:
+        if self.side == "long" and current_price < self._stop_loss_price:
+            return True
+        elif self.side == "short" and current_price > self._stop_loss_price:
+            return True
+        else:
+            return False
+
     @property
     def stop_loss_price(self):
         return self._stop_loss_price
+
+
+class ATRStopLossV1(BaseStopLoss):
+    """ 一个简单的ATR止损策略：
+        1. 以开仓价或者开仓价格前一天的价格作为基准价格
+        2. 在基准价格的基础上，以m倍的n天ATR作为止损幅度
+    """
+    def __init__(self, code, unit, side,
+                 m: float, n: int, 
+                 base_price_type: str = "open"
+                 ):
+        super.__init__(code, unit, side)
+        self.m = m
+        self.n = n
+        if base_price_type not in ("open", "prev_close", "prev_adv", "prev_disad"):
+            raise ValueError(f'Base price type should be one of {("open", "prev_close", "prev_adv", "prev_disad")}')
+        self.base_price_type = base_price_type
+
+    def _set_initial_stop_loss(self, open_price):
+        df = get_price_history(code=self.code, unit=self.unit, count=self.n+5)
+        atr = talib.ATR(high=df['high'], low=df['low'], close=df['close'], timeperiod=self.n).values[-1]
+        if pd.isna(atr):
+            raise ValueError(F"品种{self.code}没有足够{self.n}天的数据来计算ATR")
+        
+        if self.base_price_type == "open":
+            base_price = open_price
+        else:
+            prev_date = get_prev_trading_date(prev=1, as_str=True)
+            prev_price = df.loc[prev_date]
+
+            if self.base_price_type == "prev_close":
+                base_price = prev_price["close"]
+            elif base_price == "prev_adv":
+                pass
+            elif base_price == "prev_disad":
+                pass
+        
+        if self.side == "long":
+            self._stop_loss_price = base_price - self.m * atr
+        else:
+            self._stop_loss_price = base_price + self.m * atr
 
 
 ##############

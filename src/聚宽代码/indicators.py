@@ -65,7 +65,7 @@ class Indicator:
         else:
             raise ValueError("Only long and short is supported for position keyword.")
 
-    def sip(self, start_date, position):
+    def sic(self, start_date, position):
         df = self.get_price_history(start_date=start_date)
         if position == "long":
             return df['close'].max()
