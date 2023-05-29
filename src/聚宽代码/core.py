@@ -7,7 +7,7 @@ import re
 import math
 from typing import *
 from dateutil.parser import parse
-
+from copy import deepcopy
 
 
 ########################
@@ -336,14 +336,56 @@ class Trade:
 
         self.lots = 0
         # 如果移仓换月了，就返回一个新的Trade对象
-
+        return self
 
 
 ######################
 # 风险管理大脑
 #####################
 
-class Core
+class BaseMoneyMaker:
+
+    def __init__(self, context,
+                instruments: List[str],
+                open_indicators: Union[List[BaseIndicator], Dict[str, List[BaseIndicator]]],
+                stop_loss_method: Union[BaseStopLoss, Dict[str, BaseStopLoss]]
+                 ):
+        """
+        open_indicators: A list of BaseIndicator objects or A mapping from instrument name to its own list of BaseIndicators
+        stop_loss_methods: A StopLoss object or A mapping from instrument name to its own stop loss strategy
+        """
+        self.context = context
+        self.instruments = instruments
+        self.open_indicators = open_indicators
+        self.stop_loss_method = stop_loss_method
+
+        self.trade_book: Dict[str, List[Trade]] = dict()   # mapping from instrument name to all the trades
+
+    def _assign_instrument_weight(self, ins) -> float:
+        # 为每个品种分配可交易金额的权重，如不可交易则返回0
+        return 1
+
+    def calculate_instrument_weight(self) -> Dict[str, float]:
+        # 计算每个品种的交易金额占比
+        weights = {}
+        for ins in self.instruments:
+            if self.check_ins_tradable(ins):
+                w = self._assign_instrument_weight(ins)
+                if w > 0:
+                    weights[ins] = w
+        # normalize
+        norm = sum(weights.values())
+        return {k: v / norm for k, v in weights.items()}
+
+    def check_ins_tradable(self, ins) -> bool:
+        return True
+
+    def run_daily(self):
+        pass
+
+
+
+
 
 # for ins in g.instruments:
 #     RealFuture = get_dominant_future(ins)
