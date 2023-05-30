@@ -8,6 +8,7 @@ import math
 from typing import *
 from dateutil.parser import parse
 from copy import deepcopy
+from datetime import datetime
 
 
 ########################
@@ -15,7 +16,7 @@ from copy import deepcopy
 ########################
 
 
-def get_index_future_code(ins):
+def get_index_future_code(ins) -> str:
     """ 获取指数合约code """
     future_code_list = {'A':'A8888.XDCE', 'AG':'AG8888.XSGE', 'AL':'AL8888.XSGE', 'AU':'AU8888.XSGE',
                         'B':'B8888.XDCE', 'BB':'BB8888.XDCE', 'BU':'BU8888.XSGE', 'C':'C8888.XDCE', 
@@ -35,7 +36,7 @@ def get_index_future_code(ins):
     return future_code_list[ins]
 
 
-def get_main_cont_future_code(ins):
+def get_main_cont_future_code(ins) -> str:
     """ 获取主力连续合约code """
     future_code_list = {'A':'A9999.XDCE', 'AG':'AG9999.XSGE', 'AL':'AL9999.XSGE', 'AU':'AU9999.XSGE',
                         'B':'B9999.XDCE', 'BB':'BB9999.XDCE', 'BU':'BU9999.XSGE', 'C':'C9999.XDCE', 
@@ -129,13 +130,17 @@ class BaseIndicator:
         """ 1 -> 买入 -1 -> 卖出 0 -> No Action """
         raise NotImplementedError
     
+    def set_code(self, code: str):
+        self.code = code
+        return self
+    
     def __repr__(self):
         return f"{self.__class__.__name__}(code={self.code})"
 
 
 class MACrossIndicator(BaseIndicator):
 
-    def __init__(self, code, unit="1d", fast_window: int=5, slow_window: int=10, ma_type=1):
+    def __init__(self, unit="1d", fast_window: int=5, slow_window: int=10, ma_type=1):
         """
         {0: 'Simple Moving Average',
         1: 'Exponential Moving Average',
@@ -147,7 +152,6 @@ class MACrossIndicator(BaseIndicator):
         7: 'MESA Adaptive Moving Average',
         8: 'Triple Generalized Double Exponential Moving Average'}
         """
-        self.code = code
         self.unit = unit
         self.fast_window = fast_window
         self.slow_window = slow_window
@@ -178,11 +182,10 @@ class MACrossIndicator(BaseIndicator):
 
 class BaseStopLoss:
 
-    def __init__(self, code, unit, side: str):
+    def __init__(self, unit, side: str):
         """
         side: one of {long, short}
         """
-        self.code = code
         self.unit = unit
         if side not in ('long', 'short'):
             raise ValueError("side must be one of long, short.")
@@ -195,6 +198,10 @@ class BaseStopLoss:
         # 默认止损价格不改变
         return self._stop_loss_price
     
+    def set_code(self, code: str):
+        self.code = code
+        return self
+
     def update_stop_loss(self):
         # 多头的止损必须是单调递增的，空头的止损必须是单调递减的
         orig_stop_loss = self._stop_loss_price
@@ -237,11 +244,11 @@ class ATRStopLossV1(BaseStopLoss):
         1. 以开仓价或者开仓价格前一天的价格作为基准价格
         2. 在基准价格的基础上，以m倍的n天ATR作为止损幅度
     """
-    def __init__(self, code, unit, side,
+    def __init__(self, unit, side,
                  m: float, n: int, 
                  base_price_type: str = "open"
                  ):
-        super.__init__(code, unit, side)
+        super.__init__(unit, side)
         self.m = m
         self.n = n
         if base_price_type not in ("open", "prev_close", "prev_adv", "prev_disad"):
@@ -286,8 +293,9 @@ class Trade:
         self.code = code
         self.order_price = order_price
         self.side = side
-        self.stopper = stop_loss
+        self.stopper = stop_loss.set_code(code)
         self.lots = None
+        self.open_time = None
 
         future_info = get_future_basic_info(code)
         if future_info is None:
@@ -312,6 +320,7 @@ class Trade:
         if order is not None:
             self.real_open_price = real_open_price = order.price
             self.lots = order.amount
+            self.open_time = datetime.now()
 
             # 用实际的开仓价格重新设置止损
             self.stopper._set_initial_stop_loss(open_price=real_open_price)
@@ -335,7 +344,8 @@ class Trade:
         log.error(f"【平仓】code={self.code} side={self.side} lots={self.lots}")
 
         self.lots = 0
-        # 如果移仓换月了，就返回一个新的Trade对象
+        
+        # TODO: 移仓换月
         return self
 
 
@@ -356,9 +366,24 @@ class BaseMoneyMaker:
         """
         self.context = context
         self.instruments = instruments
-        self.open_indicators = open_indicators
-        self.stop_loss_method = stop_loss_method
+        
+        self.open_indicators: Dict[str, List[BaseIndicator]] = dict()
+        self.stop_loss_method: Dict[str, BaseStopLoss] = dict()
 
+        for ins in instruments:
+            # 信号默认在连续合约上生成
+            cont_code = get_main_cont_future_code(ins)
+            if isinstance(open_indicators, list):
+                self.open_indicators[ins] = [deepcopy(i).set_code(cont_code) for i in open_indicators]
+            else:
+                self.open_indicators[ins] = open_indicators[ins]
+
+            # 止损默认也基于连续合约
+            if isinstance(stop_loss_method, dict):
+                self.stop_loss_method[ins] = stop_loss_method[ins]
+            else:
+                self.stop_loss_method[ins] = deepcopy(stop_loss_method).set_code(cont_code)
+            
         self.trade_book: Dict[str, List[Trade]] = dict()   # mapping from instrument name to all the trades
 
     def _assign_instrument_weight(self, ins) -> float:
@@ -380,10 +405,36 @@ class BaseMoneyMaker:
     def check_ins_tradable(self, ins) -> bool:
         return True
 
+    def get_total_long_position(self, ins) -> int:
+        # 获取某个期货品种的多头总数
+        trades: List[Trade] = self.trade_book.get(ins, list())
+        return sum([t.lots for t in trades if t.side == "long"])
+    
+    def get_total_short_position(self, ins) -> int:
+        # 获取某个期货品种的空头总数
+        trades: List[Trade] = self.trade_book.get(ins, list())
+        return sum([t.lots for t in trades if t.side == "short"])
+
     def run_daily(self):
-        pass
+        for ins, weight in self.calculate_instrument_weight().items():
+            # 现有持仓的止损和移仓换月
+            if ins in self.trade_book:
+                for trade in self.trade_book[ins]:
+                    if trade.lots > 0:
+                        trade = trade.run_daily()                    
+                
+            # 在连续合约上产生交易信号
+            ins_cont_code = get_main_cont_future_code(ins)
+            
+            indicators = self.open_indicators[ins]
+            signals = [i.suggest() for i in indicators]
+            cnt_buy_signal, cnt_sell_signal = sum(i==1 for i in signals), sum(i==-1 for i in signals)
 
+            # 有买入信号 & 当前无空头
+            if cnt_buy_signal > 0 and self.get_total_short_position(ins) == 0:
+                pass
 
+            
 
 
 
