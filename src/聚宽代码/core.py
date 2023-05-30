@@ -226,13 +226,6 @@ class BaseStopLoss:
             return True
         else:
             return False
-        
-    def calculate_max_loss(self, current_price) -> float:
-        # 计算在当前价格下，单位合约下的最大损失
-        if self.side == "long":
-            return max(current_price - self._stop_loss_price, 0)
-        else:
-            return max(self._stop_loss_price - current_price, 0)
 
     @property
     def stop_loss_price(self):
@@ -289,28 +282,36 @@ class ATRStopLossV1(BaseStopLoss):
 
 class Trade:
 
-    def __init__(self, code, order_price, side: str, stop_loss: BaseStopLoss):
+    def __init__(self, code, side: str, stop_loss: BaseStopLoss):
         self.code = code
-        self.order_price = order_price
         self.side = side
         self.stopper = stop_loss.set_code(code)
         self.lots = None
         self.open_time = None
+        self.open_price = None
 
         future_info = get_future_basic_info(code)
         if future_info is None:
             raise ValueError(f"无法获取{self.code}基础信息")
         self.contract_unit = future_info["ContractUnit"]
 
-    def calculate_maximum_lots(self, max_loss_buffer: float) -> int:
-        # calculate the maximum loss for 1 unit
-        max_loss_per_unit = self.stopper.calculate_max_loss(current_price=self.order_price)
+    def calculate_maximum_lots(self, max_loss_buffer: float, open_price=None) -> int:
+
+        # 计算单位合约的最大损失
+        if self.side == "long":
+            return max(open_price - self._stop_loss_price, 0)
+        else:
+            return max(self._stop_loss_price - open_price, 0)
+
+        if self.open_price is not None:
+            open_price = self.open_price
+        max_loss_per_unit = self.stopper.calculate_max_loss(open_price=open_price)
         return math.floor(max_loss_buffer / (max_loss_per_unit * self.contract_unit))
     
-    def calculate_maximum_loss(self, current_price: float) -> float:
+    def calculate_maximum_loss(self) -> float:
         if self.lots is None:
             raise ValueError("Call Trade.execute first.")
-        return self.lots * self.contract_unit * self.stopper.calculate_max_loss(current_price=current_price)
+        return self.lots * self.contract_unit * self.stopper.calculate_max_loss(current_price=self.open_price)
 
     def open_position(self, lots: int, pindex=0, close_today=False) -> int:
         """ 执行开仓的交易，返回实际开仓成功的手数 """
@@ -318,8 +319,8 @@ class Trade:
         order = order_target(self.code, amount=lots, style=None, side=self.side, pindex=pindex, close_today=close_today)
         
         if order is not None:
-            self.real_open_price = real_open_price = order.price
-            self.lots = order.amount
+            self.open_price = real_open_price = order.price
+            self.lots = order.filled
             self.open_time = datetime.now()
 
             # 用实际的开仓价格重新设置止损
@@ -356,6 +357,7 @@ class Trade:
 class BaseMoneyMaker:
 
     def __init__(self, context,
+                margin: float,
                 instruments: List[str],
                 open_indicators: Union[List[BaseIndicator], Dict[str, List[BaseIndicator]]],
                 stop_loss_method: Union[BaseStopLoss, Dict[str, BaseStopLoss]]
@@ -365,6 +367,7 @@ class BaseMoneyMaker:
         stop_loss_methods: A StopLoss object or A mapping from instrument name to its own stop loss strategy
         """
         self.context = context
+        self.margin = margin
         self.instruments = instruments
         
         self.open_indicators: Dict[str, List[BaseIndicator]] = dict()
@@ -389,21 +392,34 @@ class BaseMoneyMaker:
     def _assign_instrument_weight(self, ins) -> float:
         # 为每个品种分配可交易金额的权重，如不可交易则返回0
         return 1
+    
+    def _get_total_tradable_position(self) -> float:
+        # 计算总体可开仓金额的上限，默认为6%乘以总资产
+        limit = 0.06 * self.context.portfolio.total_value
+        log.error(f"【开仓总金额限制】总资产={context.portfolio.total_value} 开仓上限={limit}")
+        return limit
+    
+    def _get_single_instrument_tradable_position(self) -> float:
+        # 计算单个品种的可开仓金额上限，默认为2%乘以总资产
+        limit = 0.02 * self.context.portfolio.total_value
+        log.error(f"【开仓单品种金额限制】总资产={context.portfolio.total_value} 开仓上限={limit}")
+        return limit
+    
+    def _check_ins_tradable(self, ins) -> bool:
+        # 判断一个品种是否可交易
+        return True
 
     def calculate_instrument_weight(self) -> Dict[str, float]:
         # 计算每个品种的交易金额占比
         weights = {}
         for ins in self.instruments:
-            if self.check_ins_tradable(ins):
+            if self._check_ins_tradable(ins):
                 w = self._assign_instrument_weight(ins)
                 if w > 0:
                     weights[ins] = w
         # normalize
         norm = sum(weights.values())
         return {k: v / norm for k, v in weights.items()}
-
-    def check_ins_tradable(self, ins) -> bool:
-        return True
 
     def get_total_long_position(self, ins) -> int:
         # 获取某个期货品种的多头总数
@@ -414,6 +430,14 @@ class BaseMoneyMaker:
         # 获取某个期货品种的空头总数
         trades: List[Trade] = self.trade_book.get(ins, list())
         return sum([t.lots for t in trades if t.side == "short"])
+    
+    def get_total_potential_loss(self):
+        # 计算当前所有未平仓头寸的潜在损失
+        potential_loss = 0
+        for ins, trades in self.trade_book.items():
+            for trade in trades:
+                potential_loss += trade.calculate_maximum_loss()  # 默认用上个交易日的收盘价
+        return potential_loss
 
     def run_daily(self):
         for ins, weight in self.calculate_instrument_weight().items():
@@ -424,17 +448,25 @@ class BaseMoneyMaker:
                         trade = trade.run_daily()                    
                 
             # 在连续合约上产生交易信号
-            ins_cont_code = get_main_cont_future_code(ins)
-            
             indicators = self.open_indicators[ins]
             signals = [i.suggest() for i in indicators]
             cnt_buy_signal, cnt_sell_signal = sum(i==1 for i in signals), sum(i==-1 for i in signals)
 
-            # 有买入信号 & 当前无空头
-            if cnt_buy_signal > 0 and self.get_total_short_position(ins) == 0:
-                pass
+            if cnt_buy_signal == 0 and cnt_sell_signal == 0:
+                log.error(f"【无交易信号】ins={ins}")
 
-            
+            # 有交易信号，存价格数据
+            dom_code = get_dominant_future(ins)
+            last_close_price = get_price_history(code=dom_code, count=5)["close"].values[-1]
+
+            if cnt_buy_signal > 0:
+                # 有买入信号 & 当前无空头
+                if self.get_total_short_position(ins) == 0:
+                    potential_loss = self.get_total_potential_loss()
+                    total_tradable_cash = self._get_total_tradable_position()
+                    single_ins_tradable_cash = self._get_single_instrument_tradable_position()
+                
+
 
 
 
@@ -460,20 +492,3 @@ class BaseMoneyMaker:
 #         order_target(LastFuture,0,side='short')
 #         order_target(dom,lots_short,side='short')
 #         print('主力合约更换，平空仓换新仓')
-
-
-# 获取交易手数函数（ATR倒数头寸）
-def get_lots(cash,symbol):
-    RealFuture = get_dominant_future(symbol)
-    # 获取价格list
-    Price_dict = attribute_history(RealFuture,10,'1d',['open'])
-    # 如果没有数据，返回
-    if len(Price_dict) == 0: 
-        return
-    else:
-        open_future = Price_dict.iloc[-1]
-    # 返回手数
-    if RealFuture in g.ATR.keys():
-        return cash*0.02/(g.ATR[RealFuture]*future_basic_info(RealFuture)['ContractUnit'])
-    else:# 函数运行之初会出现没将future写入ATR字典当中的情况
-        return cash*0.0001/future_basic_info(RealFuture)['ContractUnit']
